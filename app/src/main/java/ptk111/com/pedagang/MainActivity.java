@@ -246,9 +246,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void markerPembeli(LatLng latLng) {
+    private void markerPembeli(Integer id, LatLng latLng) {
         Log.i(TAG, "markerPembeli("+latLng+")");
-        String title = latLng.latitude + ", " + latLng.longitude;
+        String title = id + "," + latLng.latitude + ", " + latLng.longitude;
         // Define marker options
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
@@ -487,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements
                 System.out.println("longitude :" + listLongitude[i]);
 
 
-                markerPembeli(new LatLng(listLatitude[i], listLongitude[i]));
+                markerPembeli(listId[i], new LatLng(listLatitude[i], listLongitude[i]));
             }
         }catch (JSONException e) {
             e.printStackTrace();
