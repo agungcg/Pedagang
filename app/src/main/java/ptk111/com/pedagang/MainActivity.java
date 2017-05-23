@@ -1,6 +1,7 @@
 package ptk111.com.pedagang;
 
 import android.*;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -49,7 +50,7 @@ import ptk111.com.pedagang.Database.LokasiUser;
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
-
+    private static final String SP = "ptk11.com.pedagang";
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST = 99;
     private final static int INTERVAL2 = 1000; //2 minutes
@@ -202,8 +203,17 @@ public class MainActivity extends AppCompatActivity implements
 
     // Write location coordinates on UI
     private void writeActualLocation(Location location) {
+        SharedPreferences sp = getSharedPreferences(SP, MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+
+        int id;
+        String nama;
+        String username;
         double latitudePedagang;
         double longitudePedagang;
+
+        id = sp.getInt("id",0);
+        nama = sp.getString("nm","");
 
         textLat.setText( "Lat: " + location.getLatitude() );
         textLong.setText( "Long: " + location.getLongitude() );
@@ -211,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements
         latitudePedagang = location.getLatitude();
         longitudePedagang = location.getLongitude();
 
-        lokasiUser.updateLokasiPedagangById(1, latitudePedagang, longitudePedagang);
-        markerLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+        lokasiUser.updateLokasiPedagangById(id, latitudePedagang, longitudePedagang);
+        markerLocation(nama, new LatLng(location.getLatitude(), location.getLongitude()));
 
         //for (int i = 0; i < iJumlah; i++) {
             //updatePembeli(new LatLng(listLatitude[i], listLongitude[i]));
@@ -228,9 +238,9 @@ public class MainActivity extends AppCompatActivity implements
 
     /* ----------------------------------------------------------------------------------- */
     // Create a Location Marker
-    private void markerLocation(LatLng latLng) {
+    private void markerLocation(String nama, LatLng latLng) {
         Log.i(TAG, "markerLocation("+latLng+")");
-        String title = latLng.latitude + ", " + latLng.longitude;
+        String title = nama + ", " + latLng.latitude + ", " + latLng.longitude;
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title(title);
@@ -271,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
     /* ----------------------------------------------------------------------------------- */
-
     Runnable mHandlerTask = new Runnable()
     {
         @Override
